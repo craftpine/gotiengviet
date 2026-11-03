@@ -142,6 +142,13 @@ enum Telex {
                     chars[target].mark = .hat
                     continue
                 }
+                // Gõ lại phím dấu mũ đến muộn để huỷ, giống "aaa" -> "aa":
+                // "mana" -> "mân", thêm "a" -> "mana" chứ không phải "manaa".
+                if let target = hatToCancel(chars, base: lower) {
+                    chars[target].mark = .none
+                    cancel()
+                    continue
+                }
             }
 
             appendLiteral(key)
@@ -312,6 +319,13 @@ enum Telex {
         var literal = chars
         literal.append(VChar(base: base, mark: .none, isUpper: isUpper))
         return isPlausible(literal) ? nil : target
+    }
+
+    /// Nguyên âm cùng chữ cái đang mang dấu mũ trong vần, để phím a/e/o gõ lại
+    /// huỷ dấu mũ đó ("mân" + "a" -> "mana", "tiên" + "e" -> "tiene").
+    private static func hatToCancel(_ chars: [VChar], base: Character) -> Int? {
+        guard let (s, e) = nucleusRange(chars) else { return nil }
+        return (s...e).last(where: { chars[$0].base == base && chars[$0].mark == .hat })
     }
 
     // MARK: - Vị trí bỏ dấu (kiểu cũ: hòa, thủy, khỏe)

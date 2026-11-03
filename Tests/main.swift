@@ -151,6 +151,13 @@ for word in ["success", "address", "class", "stress", "process", "access"] {
 // nhau (phụ âm + nguyên âm + phụ âm cuối + nguyên âm lặp lại), nên không thể vừa
 // cho "metej" -> "mệt" vừa giữ "data". Unikey cũng vậy.
 expect("data", "dât")
+// ...nhưng gõ lại phím dấu mũ thì huỷ được, như "aaa" -> "aa"
+expect("dataa", "data")
+expect("mana", "mân")
+expect("manaa", "mana")
+expect("tienee", "tiene")
+expect("maana", "mana")
+expectScreen("mana") { $0.type("manaa") }
 
 // Cùng lý do với phím đ đến muộn: các từ d…d ngắn mà phần giữa là âm tiết hợp lệ
 expect("dad", "đa")
